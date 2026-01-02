@@ -1,6 +1,7 @@
 import { Metadata } from 'next';
 import { getServerSession } from 'next-auth';
 import { redirect } from 'next/navigation';
+import { authOptions } from '@/lib/auth';
 import { EnterpriseDashboard } from '@/components/enterprise-dashboard';
 
 export const metadata: Metadata = {
