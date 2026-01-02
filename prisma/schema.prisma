@@ -25,16 +25,44 @@ model User {
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
 
+  // Subscription fields
+  subscriptionTier      SubscriptionTier @default(FREE)
+  stripeCustomerId      String?
+  stripeSubscriptionId  String?
+  subscriptionStartDate DateTime?
+  subscriptionEndDate   DateTime?
+  credits               Int      @default(0)
+
+  // Organization relationship
+  organizationId        String?
+  organizationRole      OrganizationRole? @default(MEMBER)
+
   // Relations
-  enrollments     UserEnrollment[]
-  progress        MissionProgress[]
-  hintUsages      HintUsage[]
-  analytics       UserAnalytics[]
-  achievements    UserAchievement[]
-  codeSubmissions CodeSubmission[]
-  portfolio       PortfolioProject[]
+  enrollments       UserEnrollment[]
+  progress          MissionProgress[]
+  hintUsages        HintUsage[]
+  analytics         UserAnalytics[]
+  achievements      UserAchievement[]
+  codeSubmissions   CodeSubmission[]
+  portfolio         PortfolioProject[]
+  certifications    UserCertification[]
+  marketplacePurchases MarketplacePurchase[]
+  creatorProfile    MarketplaceCreator?
+  payouts           CreatorPayout[]
 
   @@map("users")
+}
+
+enum SubscriptionTier {
+  FREE
+  PRO
+  ENTERPRISE
+}
+
+enum OrganizationRole {
+  MEMBER
+  ADMIN
+  OWNER
 }
 
 model SkillModule {
@@ -267,4 +295,378 @@ enum ProgressStatus {
   IN_PROGRESS
   COMPLETED
   MASTERED
+}
+
+// ============================================
+// ORGANIZATION & ENTERPRISE MODELS
+// ============================================
+
+model Organization {
+  id              String   @id @default(cuid())
+  name            String
+  domain          String?  @unique
+  logo            String?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  // SSO Configuration
+  ssoProvider     String?
+  ssoConfig       String?
+  ssoEnabled      Boolean  @default(false)
+
+  // Enterprise settings
+  maxSeats        Int      @default(10)
+
+  // Relations
+  members         User[]
+  teamAnalytics   TeamAnalytics[]
+  learningPaths   LearningPath[]
+  invitations     OrganizationInvitation[]
+
+  @@map("organizations")
+}
+
+model OrganizationInvitation {
+  id             String   @id @default(cuid())
+  organizationId String
+  email          String
+  role           OrganizationRole @default(MEMBER)
+  token          String   @unique
+  expiresAt      DateTime
+  acceptedAt     DateTime?
+  createdAt      DateTime @default(now())
+
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  @@map("organization_invitations")
+}
+
+model TeamAnalytics {
+  id             String   @id @default(cuid())
+  organizationId String
+  date           DateTime @default(now())
+
+  // Aggregated metrics
+  totalMembers       Int     @default(0)
+  activeMembers      Int     @default(0)
+  missionsCompleted  Int     @default(0)
+  averageProgress    Float   @default(0)
+  totalTimeSpent     Int     @default(0)
+
+  // Skill distribution
+  skillBreakdown     String?
+
+  organization       Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  @@unique([organizationId, date])
+  @@map("team_analytics")
+}
+
+model LearningPath {
+  id             String   @id @default(cuid())
+  organizationId String
+  title          String
+  description    String
+  moduleIds      String
+  targetDeadline DateTime?
+  isActive       Boolean  @default(true)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  @@map("learning_paths")
+}
+
+// ============================================
+// CERTIFICATION MODELS
+// ============================================
+
+model Certification {
+  id              String   @id @default(cuid())
+  name            String
+  description     String
+  type            CertificationType
+  image           String?
+
+  requiredMissions   String   @default("[]")
+  requiredModules    String   @default("[]")
+  minimumScore       Float    @default(80.0)
+
+  isActive        Boolean  @default(true)
+  order           Int      @default(0)
+
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  // Relations
+  userCertifications UserCertification[]
+
+  @@map("certifications")
+}
+
+enum CertificationType {
+  GENERAL
+  DATA_SCIENTIST
+  MLOPS_ENGINEER
+  COMPUTER_VISION
+  NLP_ENGINEER
+  CAREER_READY
+}
+
+model UserCertification {
+  id              String   @id @default(cuid())
+  userId          String
+  certificationId String
+
+  certificateHash String   @unique
+  issueDate       DateTime @default(now())
+  expiryDate      DateTime?
+  score           Float?
+
+  verificationUrl String?
+  pdfPath         String?
+
+  user            User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  certification   Certification @relation(fields: [certificationId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, certificationId])
+  @@map("user_certifications")
+}
+
+// ============================================
+// MARKETPLACE MODELS
+// ============================================
+
+model MarketplaceCreator {
+  id              String   @id @default(cuid())
+  userId          String   @unique
+
+  bio             String?
+  website         String?
+  twitter         String?
+  github          String?
+
+  payoutMethod    String?
+  payoutDetails   String?
+
+  totalEarnings   Float    @default(0)
+  pendingPayout   Float    @default(0)
+
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  user            User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  items           MarketplaceItem[]
+  payouts         CreatorPayout[]
+
+  @@map("marketplace_creators")
+}
+
+model MarketplaceItem {
+  id              String   @id @default(cuid())
+  creatorId       String
+
+  title           String
+  description     String
+  type            MarketplaceItemType
+  category        String
+  tags            String   @default("[]")
+
+  price           Float    @default(0)
+  currency        String   @default("USD")
+  isFree          Boolean  @default(false)
+
+  content         String
+  previewContent  String?
+  fileUrls        String   @default("[]")
+
+  status          MarketplaceItemStatus @default(DRAFT)
+  moderationNotes String?
+
+  averageRating   Float    @default(0)
+  totalReviews    Int      @default(0)
+  totalSales      Int      @default(0)
+
+  revenueShare    Float    @default(0.6)
+
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  publishedAt     DateTime?
+
+  creator         MarketplaceCreator @relation(fields: [creatorId], references: [id], onDelete: Cascade)
+  reviews         MarketplaceReview[]
+  purchases       MarketplacePurchase[]
+
+  @@map("marketplace_items")
+}
+
+enum MarketplaceItemType {
+  MISSION_PACK
+  STUDY_GUIDE
+  VIDEO_COURSE
+  TEMPLATE
+  PRACTICE_EXAM
+  INTERVIEW_PREP
+}
+
+enum MarketplaceItemStatus {
+  DRAFT
+  PENDING_REVIEW
+  APPROVED
+  REJECTED
+  ARCHIVED
+}
+
+model MarketplaceReview {
+  id              String   @id @default(cuid())
+  itemId          String
+  userId          String
+
+  rating          Int
+  title           String?
+  content         String
+
+  isVerified      Boolean  @default(false)
+
+  createdAt       DateTime @default(now())
+
+  item            MarketplaceItem @relation(fields: [itemId], references: [id], onDelete: Cascade)
+
+  @@unique([itemId, userId])
+  @@map("marketplace_reviews")
+}
+
+model MarketplacePurchase {
+  id              String   @id @default(cuid())
+  userId          String
+  itemId          String
+
+  amount          Float
+  currency        String   @default("USD")
+  paymentMethod   String?
+  stripePaymentId String?
+
+  purchasedAt     DateTime @default(now())
+  accessExpires   DateTime?
+
+  user            User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  item            MarketplaceItem @relation(fields: [itemId], references: [id], onDelete: Cascade)
+
+  @@map("marketplace_purchases")
+}
+
+model CreatorPayout {
+  id              String   @id @default(cuid())
+  creatorId       String
+
+  amount          Float
+  currency        String   @default("USD")
+  status          PayoutStatus @default(PENDING)
+
+  items           String   @default("[]")
+
+  processedAt     DateTime?
+  transactionId   String?
+
+  createdAt       DateTime @default(now())
+
+  creator         MarketplaceCreator @relation(fields: [creatorId], references: [id], onDelete: Cascade)
+
+  @@map("creator_payouts")
+}
+
+enum PayoutStatus {
+  PENDING
+  PROCESSING
+  COMPLETED
+  FAILED
+}
+
+// ============================================
+// BILLING MODELS
+// ============================================
+
+model SubscriptionPlan {
+  id              String   @id @default(cuid())
+  name            String
+  tier            SubscriptionTier
+  description     String
+
+  monthlyPrice    Float
+  annualPrice     Float
+  currency        String   @default("USD")
+
+  features        String   @default("[]")
+
+  maxMissions     Int      @default(40)
+  hasAnalytics    Boolean  @default(false)
+  hasCertifications Boolean @default(false)
+  hasSupport      Boolean  @default(false)
+
+  stripeMonthlyPriceId String?
+  stripeAnnualPriceId  String?
+
+  isActive        Boolean  @default(true)
+  order           Int      @default(0)
+
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@map("subscription_plans")
+}
+
+model PaymentTransaction {
+  id              String   @id @default(cuid())
+  userId          String
+
+  amount          Float
+  currency        String   @default("USD")
+  type            PaymentType
+  status          PaymentStatus @default(PENDING)
+
+  stripePaymentIntentId String?
+  stripeInvoiceId String?
+
+  description     String?
+  metadata        String?
+
+  createdAt       DateTime @default(now())
+  processedAt     DateTime?
+
+  @@map("payment_transactions")
+}
+
+enum PaymentType {
+  SUBSCRIPTION
+  ONE_TIME
+  MARKETPLACE
+  REFUND
+}
+
+enum PaymentStatus {
+  PENDING
+  PROCESSING
+  SUCCEEDED
+  FAILED
+  REFUNDED
+}
+
+// ============================================
+// EVENT LOGGING
+// ============================================
+
+model MonetizationEvent {
+  id              String   @id @default(cuid())
+  userId          String?
+  eventType       String
+  eventData       String   @default("{}")
+
+  amount          Float?
+  currency        String?
+
+  createdAt       DateTime @default(now())
+
+  @@index([userId, eventType])
+  @@map("monetization_events")
 }
