@@ -36,6 +36,7 @@ model User {
   // Organization relationship
   organizationId        String?
   organizationRole      OrganizationRole? @default(MEMBER)
+  organization          Organization? @relation(fields: [organizationId], references: [id])
 
   // Relations
   enrollments       UserEnrollment[]
@@ -48,7 +49,6 @@ model User {
   certifications    UserCertification[]
   marketplacePurchases MarketplacePurchase[]
   creatorProfile    MarketplaceCreator?
-  payouts           CreatorPayout[]
 
   @@map("users")
 }
