@@ -1,58 +1,58 @@
-# 🚀 Welcome to Z.ai Code Scaffold
+# 🧠 Skillytics - AI/ML Mission-Based Learning System
 
-A modern, production-ready web application scaffold powered by cutting-edge technologies, designed to accelerate your development with [Z.ai](https://chat.z.ai)'s AI-powered coding assistance.
+A revolutionary platform that teaches AI/ML through hands-on missions instead of videos. Learn by fixing, building, training, debugging, and deploying models in real-world scenarios.
 
-## ✨ Technology Stack
+## 🎯 Core Philosophy
 
-This scaffold provides a robust foundation built with:
+**Problem → Data → Model → Mistake → Fix → Insight**
 
-### 🎯 Core Framework
-- **⚡ Next.js 15** - The React framework for production with App Router
-- **📘 TypeScript 5** - Type-safe JavaScript for better developer experience
-- **🎨 Tailwind CSS 4** - Utility-first CSS framework for rapid UI development
+No videos. No lectures. Only missions that mimic what ML engineers actually do in the real world.
 
-### 🧩 UI Components & Styling
-- **🧩 shadcn/ui** - High-quality, accessible components built on Radix UI
-- **🎯 Lucide React** - Beautiful & consistent icon library
-- **🌈 Framer Motion** - Production-ready motion library for React
-- **🎨 Next Themes** - Perfect dark mode in 2 lines of code
+## ✨ Features
 
-### 📋 Forms & Validation
-- **🎣 React Hook Form** - Performant forms with easy validation
-- **✅ Zod** - TypeScript-first schema validation
+### 🚀 Mission-Based Learning
+- **8 Mission Types**: Model Debug, Data Quality, Algorithm Selection, Math-in-Code, Training Optimization, Evaluation Metrics, ML Security & Ethics, Deployment
+- **Real-World Scenarios**: Every mission is based on actual ML engineering challenges
+- **Progressive Difficulty**: From beginner to expert with structured skill tree
+- **Hands-On Coding**: Write real Python code to solve actual ML problems
 
-### 🔄 State Management & Data Fetching
-- **🐻 Zustand** - Simple, scalable state management
-- **🔄 TanStack Query** - Powerful data synchronization for React
-- **🌐 Fetch** - Promise-based HTTP request
+### 🤖 AI Mentor System
+- **Progressive Hints**: Get contextual guidance without giving away answers
+- **Smart Feedback**: Understand what went wrong and how to fix it
+- **Learning Paths**: Personalized recommendations based on your progress
 
-### 🗄️ Database & Backend
-- **🗄️ Prisma** - Next-generation TypeScript ORM
-- **🔐 NextAuth.js** - Complete open-source authentication solution
+### 📊 Comprehensive Analytics
+- **Skill Profiling**: Track your strengths and improvement areas
+- **Progress Tracking**: Monitor completion rates and learning patterns
+- **Achievement System**: Unlock badges and showcase your expertise
+- **Career Portfolio**: Build a real portfolio of ML projects
 
-### 🎨 Advanced UI Features
-- **📊 TanStack Table** - Headless UI for building tables and datagrids
-- **🖱️ DND Kit** - Modern drag and drop toolkit for React
-- **📊 Recharts** - Redefined chart library built with React and D3
-- **🖼️ Sharp** - High performance image processing
+### 🎨 Modern UI/UX
+- **Mobile-First Design**: Learn on any device, anywhere
+- **PWA Ready**: Install as a native app on mobile devices
+- **Dark/Light Mode**: Comfortable learning in any environment
+- **Responsive Code Editor**: Write and test code directly in your browser
 
-### 🌍 Internationalization & Utilities
-- **🌍 Next Intl** - Internationalization library for Next.js
-- **📅 Date-fns** - Modern JavaScript date utility library
-- **🪝 ReactUse** - Collection of essential React hooks for modern development
+## 🛠 Technology Stack
 
-## 🎯 Why This Scaffold?
+### Frontend
+- **⚡ Next.js 15** - React framework with App Router
+- **📘 TypeScript 5** - Type-safe development
+- **🎨 Tailwind CSS 4** - Modern utility-first styling
+- **🧩 shadcn/ui** - Beautiful, accessible components
+- **🌈 Framer Motion** - Smooth animations and interactions
 
-- **🏎️ Fast Development** - Pre-configured tooling and best practices
-- **🎨 Beautiful UI** - Complete shadcn/ui component library with advanced interactions
-- **🔒 Type Safety** - Full TypeScript configuration with Zod validation
-- **📱 Responsive** - Mobile-first design principles with smooth animations
-- **🗄️ Database Ready** - Prisma ORM configured for rapid backend development
-- **🔐 Auth Included** - NextAuth.js for secure authentication flows
-- **📊 Data Visualization** - Charts, tables, and drag-and-drop functionality
-- **🌍 i18n Ready** - Multi-language support with Next Intl
-- **🚀 Production Ready** - Optimized build and deployment settings
-- **🤖 AI-Friendly** - Structured codebase perfect for AI assistance
+### Backend
+- **🗄️ Prisma ORM** - Type-safe database operations
+- **🔍 SQLite** - Lightweight, reliable database
+- **🚀 z-ai-web-dev-sdk** - AI-powered features and validation
+- **📊 Analytics Engine** - Comprehensive learning analytics
+
+### Infrastructure
+- **📱 PWA Support** - Native app experience
+- **🔒 Secure APIs** - Protected backend endpoints
+- **📈 Real-time Updates** - Live progress tracking
+- **🌐 CDN Ready** - Optimized asset delivery
 
 ## 🚀 Quick Start
 
@@ -60,82 +60,167 @@ This scaffold provides a robust foundation built with:
 # Install dependencies
 bun install
 
+# Set up the database
+bun run db:push
+
+# Seed sample data
+bun prisma/seed.js
+
 # Start development server
 bun run dev
-
-# Build for production
-bun run build
-
-# Start production server
-bun start
 ```
 
-Open [http://localhost:3000](http://localhost:3000) to see your application running.
-
-## 🤖 Powered by Z.ai
-
-This scaffold is optimized for use with [Z.ai](https://chat.z.ai) - your AI assistant for:
-
-- **💻 Code Generation** - Generate components, pages, and features instantly
-- **🎨 UI Development** - Create beautiful interfaces with AI assistance  
-- **🔧 Bug Fixing** - Identify and resolve issues with intelligent suggestions
-- **📝 Documentation** - Auto-generate comprehensive documentation
-- **🚀 Optimization** - Performance improvements and best practices
-
-Ready to build something amazing? Start chatting with Z.ai at [chat.z.ai](https://chat.z.ai) and experience the future of AI-powered development!
+Open [http://localhost:3000](http://localhost:3000) to start your ML learning journey!
 
 ## 📁 Project Structure
 
 ```
 src/
-├── app/                 # Next.js App Router pages
-├── components/          # Reusable React components
-│   └── ui/             # shadcn/ui components
-├── hooks/              # Custom React hooks
-└── lib/                # Utility functions and configurations
+├── app/                    # Next.js App Router
+│   ├── api/               # Backend API routes
+│   │   ├── missions/      # Mission management
+│   │   ├── modules/       # Skill modules
+│   │   ├── progress/      # User progress
+│   │   └── submissions/   # Code submissions
+│   ├── dashboard/         # Learning dashboard
+│   ├── mission/           # Mission interface
+│   └── page.tsx          # Landing page
+├── components/            # React components
+│   └── ui/               # shadcn/ui components
+├── lib/                  # Utilities and configurations
+│   ├── db.ts            # Database client
+│   ├── utils.ts         # Helper functions
+│   └── validation.ts    # Code validation engine
+├── hooks/               # Custom React hooks
+└── prisma/              # Database schema and seeds
 ```
 
-## 🎨 Available Features & Components
+## 🎮 Mission Types
 
-This scaffold includes a comprehensive set of modern web development tools:
+### 1. 🐛 Model Debug Missions
+- Fix broken models with data leakage
+- Improve poor performance in production
+- Debug training issues and convergence problems
 
-### 🧩 UI Components (shadcn/ui)
-- **Layout**: Card, Separator, Aspect Ratio, Resizable Panels
-- **Forms**: Input, Textarea, Select, Checkbox, Radio Group, Switch
-- **Feedback**: Alert, Toast (Sonner), Progress, Skeleton
-- **Navigation**: Breadcrumb, Menubar, Navigation Menu, Pagination
-- **Overlay**: Dialog, Sheet, Popover, Tooltip, Hover Card
-- **Data Display**: Badge, Avatar, Calendar
+### 2. 📊 Data Quality Missions
+- Handle missing values and outliers
+- Clean messy real-world datasets
+- Balance imbalanced data distributions
 
-### 📊 Advanced Data Features
-- **Tables**: Powerful data tables with sorting, filtering, pagination (TanStack Table)
-- **Charts**: Beautiful visualizations with Recharts
-- **Forms**: Type-safe forms with React Hook Form + Zod validation
+### 3. 🧠 Algorithm Selection Missions
+- Choose the right algorithm for specific problems
+- Compare model performance and trade-offs
+- Justify your choices with evidence
 
-### 🎨 Interactive Features
-- **Animations**: Smooth micro-interactions with Framer Motion
-- **Drag & Drop**: Modern drag-and-drop functionality with DND Kit
-- **Theme Switching**: Built-in dark/light mode support
+### 4. 🧮 Math-in-Code Missions
+- Fix gradient descent issues
+- Resolve vanishing/exploding gradients
+- Implement mathematical concepts in code
 
-### 🔐 Backend Integration
-- **Authentication**: Ready-to-use auth flows with NextAuth.js
-- **Database**: Type-safe database operations with Prisma
-- **API Client**: HTTP requests with Fetch + TanStack Query
-- **State Management**: Simple and scalable with Zustand
+### 5. ⚙️ Training & Optimization Missions
+- Tune hyperparameters for better performance
+- Optimize training speed and efficiency
+- Handle convergence and stability issues
 
-### 🌍 Production Features
-- **Internationalization**: Multi-language support with Next Intl
-- **Image Optimization**: Automatic image processing with Sharp
-- **Type Safety**: End-to-end TypeScript with Zod validation
-- **Essential Hooks**: 100+ useful React hooks with ReactUse for common patterns
+### 6. 📈 Evaluation & Metrics Missions
+- Choose appropriate evaluation metrics
+- Interpret confusion matrices and ROC curves
+- Fix misleading accuracy measurements
 
-## 🤝 Get Started with Z.ai
+### 7. 🔐 ML Security & Ethics Missions
+- Detect and mitigate model bias
+- Handle data privacy concerns
+- Identify potential security vulnerabilities
 
-1. **Clone this scaffold** to jumpstart your project
-2. **Visit [chat.z.ai](https://chat.z.ai)** to access your AI coding assistant
-3. **Start building** with intelligent code generation and assistance
-4. **Deploy with confidence** using the production-ready setup
+### 8. 🚀 Deployment Missions
+- Deploy models as production APIs
+- Handle latency and scalability issues
+- Monitor model drift and performance
+
+## 🔧 API Endpoints
+
+### Missions
+- `GET /api/missions` - List available missions
+- `POST /api/missions` - Create new mission
+- `GET /api/missions/:id` - Get mission details
+
+### Progress
+- `GET /api/progress` - Get user progress
+- `POST /api/progress` - Update mission progress
+
+### Submissions
+- `POST /api/submissions` - Submit code for validation
+- `GET /api/submissions/:id` - Get submission results
+
+### Modules
+- `GET /api/modules` - List skill modules
+- `POST /api/modules` - Create new module
+
+## 🎯 Learning Path
+
+1. **Data Thinking for ML** - Learn to think like an ML engineer
+2. **Python for ML** - Master essential libraries (NumPy, Pandas, Scikit-learn)
+3. **Data Cleaning & EDA** - Handle real-world data challenges
+4. **Supervised Learning** - Build your first predictive models
+5. **Model Evaluation** - Master the art of measuring performance
+6. **Feature Engineering** - Create powerful model features
+7. **Unsupervised Learning** - Discover patterns in unlabeled data
+8. **Deep Learning Basics** - Introduction to neural networks
+9. **Advanced Topics** - CNNs, NLP, Reinforcement Learning
+10. **MLOps Fundamentals** - Deploy and maintain models
+11. **ML Security & Ethics** - Responsible AI development
+12. **Career Mode** - Build your professional portfolio
+
+## 🏆 Achievements
+
+- **First Bug Fix** - Successfully debug your first model
+- **Data Cleaning Pro** - Complete 5 data quality missions
+- **Algorithm Expert** - Master algorithm selection
+- **7-Day Streak** - Maintain consistent learning habits
+- **Speed Runner** - Complete missions under time pressure
+- **Perfect Score** - Achieve 100% on difficult missions
+
+## 📱 Mobile App
+
+Skillytics is built as a Progressive Web App (PWA) and works seamlessly on:
+
+- 📱 **iOS Devices** - Install as a native app from Safari
+- 🤖 **Android Devices** - Install from Chrome browser
+- 💻 **Desktop** - Full-featured web experience
+- 📟 **Tablets** - Optimized for touch interfaces
+
+## 🤝 Contributing
+
+We welcome contributions! Here's how you can help:
+
+1. **Create New Missions** - Add interesting ML challenges
+2. **Improve Validation** - Enhance the code validation engine
+3. **Fix Bugs** - Report and fix issues
+4. **Add Features** - Suggest and implement new learning tools
+5. **Documentation** - Improve guides and tutorials
+
+## 📚 Resources
+
+- [Mission Creation Guide](./docs/mission-creation.md)
+- [API Documentation](./docs/api.md)
+- [Learning Path Overview](./docs/learning-path.md)
+- [Contributing Guidelines](./docs/contributing.md)
+
+## 🚀 Why Skillytics Works
+
+Traditional platforms teach theory. We build practitioners.
+
+| Platform | Method | Real Skills | Job Ready |
+|----------|--------|-------------|-----------|
+| Coursera | Videos | ❌ | ❌ |
+| Udemy | Tutorials | ❌ | ❌ |
+| Codecademy | Syntax | ❌ | ❌ |
+| **Skillytics** | **Real ML Problem-Solving** | ✅ | ✅ |
+
+Stop consuming content. Start building skills that matter.
 
 ---
 
-Built with ❤️ for the developer community. Supercharged by [Z.ai](https://chat.z.ai) 🚀
+🧠 **Build real ML skills, not fake certificates.**
+
+🚀 **Ready to start your journey?** Visit [localhost:3000](http://localhost:3000) and dive into your first mission!

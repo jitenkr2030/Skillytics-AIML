@@ -14,25 +14,39 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Z.ai Code Scaffold - AI-Powered Development",
-  description: "Modern Next.js scaffold optimized for AI-powered development with Z.ai. Built with TypeScript, Tailwind CSS, and shadcn/ui.",
-  keywords: ["Z.ai", "Next.js", "TypeScript", "Tailwind CSS", "shadcn/ui", "AI development", "React"],
-  authors: [{ name: "Z.ai Team" }],
+  title: "Skillytics - AI/ML Mission-Based Learning",
+  description: "Master AI/ML by fixing, building, training, debugging, and deploying models in real scenarios. No videos. No lectures. Only missions.",
+  keywords: ["Skillytics", "AI", "ML", "Machine Learning", "Education", "Missions", "Coding", "Data Science", "Python"],
+  authors: [{ name: "Skillytics Team" }],
   icons: {
-    icon: "https://z-cdn.chatglm.cn/z-ai/static/logo.svg",
+    icon: "/icon-192x192.png",
+    apple: "/icon-192x192.png",
+  },
+  manifest: "/manifest.json",
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "default",
+    title: "Skillytics",
   },
   openGraph: {
-    title: "Z.ai Code Scaffold",
-    description: "AI-powered development with modern React stack",
-    url: "https://chat.z.ai",
-    siteName: "Z.ai",
+    title: "Skillytics - AI/ML Mission-Based Learning",
+    description: "Master AI/ML by doing real missions, not watching videos. Build practical skills through hands-on problem solving.",
+    url: "https://skillytics.com",
+    siteName: "Skillytics",
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Z.ai Code Scaffold",
-    description: "AI-powered development with modern React stack",
+    title: "Skillytics - AI/ML Mission-Based Learning",
+    description: "Master AI/ML by doing real missions, not watching videos.",
   },
+};
+
+export const viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
 };
 
 export default function RootLayout({
