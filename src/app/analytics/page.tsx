@@ -14,14 +14,12 @@ import {
   Trophy, 
   Clock,
   Zap,
-  BookOpen,
   BarChart3,
   PieChart,
-  Activity,
-  Award,
   Calendar,
-  Users,
-  CheckCircle
+  Award,
+  BookOpen,
+  Activity
 } from 'lucide-react'
 import Link from 'next/link'
 
@@ -31,123 +29,99 @@ export default function Analytics() {
       totalMissions: 0,
       completedMissions: 0,
       averageScore: 0,
-      totalTime: 0,
+      totalTimeSpent: 0,
       currentStreak: 0,
-      bestStreak: 0
+      level: 1,
+      totalPoints: 0
     },
-    skills: {
-      bugFixes: 0,
-      modelsImproved: 0,
-      dataCleaned: 0,
-      algorithmsChosen: 0,
-      optimizations: 0,
-      securityTasks: 0
-    },
-    missionTypes: [
-      { type: 'MODEL_DEBUG', completed: 0, total: 0, avgScore: 0 },
-      { type: 'DATA_QUALITY', completed: 0, total: 0, avgScore: 0 },
-      { type: 'ALGORITHM_SELECTION', completed: 0, total: 0, avgScore: 0 },
-      { type: 'TRAINING_OPTIMIZATION', completed: 0, total: 0, avgScore: 0 },
-      { type: 'EVALUATION_METRICS', completed: 0, total: 0, avgScore: 0 },
-      { type: 'FEATURE_ENGINEERING', completed: 0, total: 0, avgScore: 0 },
-      { type: 'ML_SECURITY', completed: 0, total: 0, avgScore: 0 },
-      { type: 'DEPLOYMENT', completed: 0, total: 0, avgScore: 0 }
+    skillBreakdown: [
+      { type: 'MODEL_DEBUG', completed: 0, total: 0, avgScore: 0, icon: Code },
+      { type: 'DATA_QUALITY', completed: 0, total: 0, avgScore: 0, icon: Database },
+      { type: 'ALGORITHM_SELECTION', completed: 0, total: 0, avgScore: 0, icon: Brain },
+      { type: 'TRAINING_OPTIMIZATION', completed: 0, total: 0, avgScore: 0, icon: Target },
+      { type: 'EVALUATION_METRICS', completed: 0, total: 0, avgScore: 0, icon: Trophy },
+      { type: 'ML_SECURITY', completed: 0, total: 0, avgScore: 0, icon: Zap },
+      { type: 'DEPLOYMENT', completed: 0, total: 0, avgScore: 0, icon: Activity },
+      { type: 'MATH_IN_CODE', completed: 0, total: 0, avgScore: 0, icon: BarChart3 }
     ],
-    weeklyProgress: [
-      { day: 'Mon', missions: 0, points: 0 },
-      { day: 'Tue', missions: 0, points: 0 },
-      { day: 'Wed', missions: 0, points: 0 },
-      { day: 'Thu', missions: 0, points: 0 },
-      { day: 'Fri', missions: 0, points: 0 },
-      { day: 'Sat', missions: 0, points: 0 },
-      { day: 'Sun', missions: 0, points: 0 }
+    weeklyActivity: [
+      { day: 'Mon', missions: 0, timeSpent: 0 },
+      { day: 'Tue', missions: 0, timeSpent: 0 },
+      { day: 'Wed', missions: 0, timeSpent: 0 },
+      { day: 'Thu', missions: 0, timeSpent: 0 },
+      { day: 'Fri', missions: 0, timeSpent: 0 },
+      { day: 'Sat', missions: 0, timeSpent: 0 },
+      { day: 'Sun', missions: 0, timeSpent: 0 }
     ],
-    achievements: []
+    achievements: [
+      { id: '1', title: 'First Bug Fix', description: 'Successfully debug your first model', unlocked: true, icon: 'Bug' },
+      { id: '2', title: 'Data Cleaning Pro', description: 'Complete 5 data quality missions', unlocked: false, icon: 'Sparkles' },
+      { id: '3', title: 'Algorithm Expert', description: 'Choose algorithms for 10 problems', unlocked: false, icon: 'Brain' },
+      { id: '4', title: '7-Day Streak', description: 'Maintain a 7-day learning streak', unlocked: false, icon: 'Flame' }
+    ]
   })
 
-  const [loading, setLoading] = useState(true)
+  const [timeRange, setTimeRange] = useState('week')
 
   useEffect(() => {
-    // Simulate loading analytics data
-    setTimeout(() => {
-      setAnalytics({
-        overview: {
-          totalMissions: 24,
-          completedMissions: 18,
-          averageScore: 85.5,
-          totalTime: 1240, // minutes
-          currentStreak: 7,
-          bestStreak: 12
-        },
-        skills: {
-          bugFixes: 8,
-          modelsImproved: 12,
-          dataCleaned: 6,
-          algorithmsChosen: 4,
-          optimizations: 5,
-          securityTasks: 3
-        },
-        missionTypes: [
-          { type: 'MODEL_DEBUG', completed: 5, total: 8, avgScore: 82 },
-          { type: 'DATA_QUALITY', completed: 4, total: 6, avgScore: 88 },
-          { type: 'ALGORITHM_SELECTION', completed: 2, total: 4, avgScore: 79 },
-          { type: 'TRAINING_OPTIMIZATION', completed: 3, total: 5, avgScore: 86 },
-          { type: 'EVALUATION_METRICS', completed: 2, total: 3, avgScore: 91 },
-          { type: 'FEATURE_ENGINEERING', completed: 1, total: 2, avgScore: 85 },
-          { type: 'ML_SECURITY', completed: 1, total: 2, avgScore: 78 },
-          { type: 'DEPLOYMENT', completed: 0, total: 2, avgScore: 0 }
-        ],
-        weeklyProgress: [
-          { day: 'Mon', missions: 2, points: 250 },
-          { day: 'Tue', missions: 3, points: 380 },
-          { day: 'Wed', missions: 1, points: 120 },
-          { day: 'Thu', missions: 4, points: 520 },
-          { day: 'Fri', missions: 2, points: 300 },
-          { day: 'Sat', missions: 3, points: 450 },
-          { day: 'Sun', missions: 3, points: 410 }
-        ],
-        achievements: [
-          { id: '1', title: 'First Bug Fix', description: 'Successfully debug your first model', icon: 'Bug', earnedAt: '2024-01-15' },
-          { id: '2', title: 'Data Cleaning Pro', description: 'Complete 5 data quality missions', icon: 'Sparkles', earnedAt: '2024-01-18' },
-          { id: '3', title: '7-Day Streak', description: 'Maintain a 7-day learning streak', icon: 'Flame', earnedAt: '2024-01-20' },
-          { id: '4', title: 'Algorithm Expert', description: 'Choose correct algorithms 10 times', icon: 'Brain', earnedAt: '2024-01-22' }
-        ]
-      })
-      setLoading(false)
-    }, 1000)
+    // Mock data for demonstration
+    setAnalytics({
+      overview: {
+        totalMissions: 320,
+        completedMissions: 12,
+        averageScore: 87.5,
+        totalTimeSpent: 480,
+        currentStreak: 5,
+        level: 3,
+        totalPoints: 450
+      },
+      skillBreakdown: [
+        { type: 'MODEL_DEBUG', completed: 3, total: 40, avgScore: 92, icon: Code },
+        { type: 'DATA_QUALITY', completed: 4, total: 40, avgScore: 88, icon: Database },
+        { type: 'ALGORITHM_SELECTION', completed: 2, total: 40, avgScore: 85, icon: Brain },
+        { type: 'TRAINING_OPTIMIZATION', completed: 1, total: 40, avgScore: 79, icon: Target },
+        { type: 'EVALUATION_METRICS', completed: 2, total: 40, avgScore: 91, icon: Trophy },
+        { type: 'ML_SECURITY', completed: 0, total: 40, avgScore: 0, icon: Zap },
+        { type: 'DEPLOYMENT', completed: 0, total: 40, avgScore: 0, icon: Activity },
+        { type: 'MATH_IN_CODE', completed: 0, total: 40, avgScore: 0, icon: BarChart3 }
+      ],
+      weeklyActivity: [
+        { day: 'Mon', missions: 2, timeSpent: 45 },
+        { day: 'Tue', missions: 1, timeSpent: 30 },
+        { day: 'Wed', missions: 3, timeSpent: 60 },
+        { day: 'Thu', missions: 0, timeSpent: 0 },
+        { day: 'Fri', missions: 2, timeSpent: 50 },
+        { day: 'Sat', missions: 3, timeSpent: 75 },
+        { day: 'Sun', missions: 1, timeSpent: 25 }
+      ],
+      achievements: [
+        { id: '1', title: 'First Bug Fix', description: 'Successfully debug your first model', unlocked: true, icon: 'Bug' },
+        { id: '2', title: 'Data Cleaning Pro', description: 'Complete 5 data quality missions', unlocked: true, icon: 'Sparkles' },
+        { id: '3', title: 'Algorithm Expert', description: 'Choose algorithms for 10 problems', unlocked: false, icon: 'Brain' },
+        { id: '4', title: '7-Day Streak', description: 'Maintain a 7-day learning streak', unlocked: false, icon: 'Flame' }
+      ]
+    })
   }, [])
 
-  const getMissionTypeIcon = (type: string) => {
-    switch (type) {
-      case 'MODEL_DEBUG': return Code
-      case 'DATA_QUALITY': return Database
-      case 'ALGORITHM_SELECTION': return Brain
-      case 'TRAINING_OPTIMIZATION': return Target
-      case 'EVALUATION_METRICS': return Trophy
-      case 'FEATURE_ENGINEERING': return Zap
-      case 'ML_SECURITY': return Users
-      case 'DEPLOYMENT': return Activity
-      default: return Brain
-    }
-  }
-
   const getMissionTypeLabel = (type: string) => {
-    return type.replace(/_/g, ' ').toLowerCase().replace(/\b\w/g, l => l.toUpperCase())
+    const labels: { [key: string]: string } = {
+      'MODEL_DEBUG': 'Model Debug',
+      'DATA_QUALITY': 'Data Quality',
+      'ALGORITHM_SELECTION': 'Algorithm Selection',
+      'TRAINING_OPTIMIZATION': 'Training Optimization',
+      'EVALUATION_METRICS': 'Evaluation Metrics',
+      'ML_SECURITY': 'ML Security',
+      'DEPLOYMENT': 'Deployment',
+      'MATH_IN_CODE': 'Math in Code'
+    }
+    return labels[type] || type
   }
 
-  const completionRate = analytics.overview.totalMissions > 0 
-    ? (analytics.overview.completedMissions / analytics.overview.totalMissions) * 100 
-    : 0
-
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600 mx-auto mb-4"></div>
-          <p className="text-gray-600">Loading analytics...</p>
-        </div>
-      </div>
-    )
+  const getSkillColor = (score: number) => {
+    if (score >= 90) return 'text-green-600 bg-green-100'
+    if (score >= 80) return 'text-blue-600 bg-blue-100'
+    if (score >= 70) return 'text-yellow-600 bg-yellow-100'
+    return 'text-red-600 bg-red-100'
   }
 
   return (
@@ -160,15 +134,18 @@ export default function Analytics() {
               <Brain className="h-6 w-6 text-indigo-600" />
               <span className="text-xl font-bold">Skillytics</span>
             </Link>
-            <div className="h-6 w-px bg-gray-300"></div>
-            <h1 className="text-xl font-semibold">Analytics Dashboard</h1>
+            <span className="text-gray-400">/</span>
+            <h1 className="text-xl font-semibold">Analytics</h1>
           </div>
           <div className="flex items-center gap-4">
             <Badge variant="outline" className="text-sm">
-              Level 3 • 1,250 points
+              Level {analytics.overview.level}
             </Badge>
             <Badge variant="outline" className="text-sm">
-              🔥 7 day streak
+              {analytics.overview.totalPoints} pts
+            </Badge>
+            <Badge variant="outline" className="text-sm">
+              {analytics.overview.currentStreak} day streak
             </Badge>
           </div>
         </div>
@@ -185,14 +162,17 @@ export default function Analytics() {
                   <p className="text-2xl font-bold">{analytics.overview.completedMissions}</p>
                   <p className="text-xs text-gray-500">of {analytics.overview.totalMissions} total</p>
                 </div>
-                <div className="h-12 w-12 bg-green-100 rounded-full flex items-center justify-center">
-                  <CheckCircle className="h-6 w-6 text-green-600" />
+                <div className="h-12 w-12 bg-indigo-100 rounded-full flex items-center justify-center">
+                  <Target className="h-6 w-6 text-indigo-600" />
                 </div>
               </div>
-              <Progress value={completionRate} className="mt-3" />
+              <Progress 
+                value={(analytics.overview.completedMissions / analytics.overview.totalMissions) * 100} 
+                className="mt-4 h-2" 
+              />
             </CardContent>
           </Card>
-
+          
           <Card>
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
@@ -201,155 +181,80 @@ export default function Analytics() {
                   <p className="text-2xl font-bold">{analytics.overview.averageScore}%</p>
                   <p className="text-xs text-green-600">+5.2% this week</p>
                 </div>
-                <div className="h-12 w-12 bg-blue-100 rounded-full flex items-center justify-center">
-                  <BarChart3 className="h-6 w-6 text-blue-600" />
+                <div className="h-12 w-12 bg-green-100 rounded-full flex items-center justify-center">
+                  <Trophy className="h-6 w-6 text-green-600" />
                 </div>
               </div>
             </CardContent>
           </Card>
-
+          
           <Card>
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-gray-600">Learning Time</p>
-                  <p className="text-2xl font-bold">{Math.floor(analytics.overview.totalTime / 60)}h</p>
-                  <p className="text-xs text-gray-500">{analytics.overview.totalTime % 60}m total</p>
+                  <p className="text-sm font-medium text-gray-600">Time Spent</p>
+                  <p className="text-2xl font-bold">{analytics.overview.totalTimeSpent}m</p>
+                  <p className="text-xs text-gray-500">This week</p>
                 </div>
-                <div className="h-12 w-12 bg-purple-100 rounded-full flex items-center justify-center">
-                  <Clock className="h-6 w-6 text-purple-600" />
+                <div className="h-12 w-12 bg-orange-100 rounded-full flex items-center justify-center">
+                  <Clock className="h-6 w-6 text-orange-600" />
                 </div>
               </div>
             </CardContent>
           </Card>
-
+          
           <Card>
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm font-medium text-gray-600">Current Streak</p>
-                  <p className="text-2xl font-bold">{analytics.overview.currentStreak} days</p>
-                  <p className="text-xs text-gray-500">Best: {analytics.overview.bestStreak} days</p>
+                  <p className="text-2xl font-bold">{analytics.overview.currentStreak}</p>
+                  <p className="text-xs text-gray-500">days in a row</p>
                 </div>
-                <div className="h-12 w-12 bg-orange-100 rounded-full flex items-center justify-center">
-                  <Zap className="h-6 w-6 text-orange-600" />
+                <div className="h-12 w-12 bg-yellow-100 rounded-full flex items-center justify-center">
+                  <Zap className="h-6 w-6 text-yellow-600" />
                 </div>
               </div>
             </CardContent>
           </Card>
         </div>
 
-        <Tabs defaultValue="skills" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-4">
-            <TabsTrigger value="skills">Skills Breakdown</TabsTrigger>
-            <TabsTrigger value="missions">Mission Types</TabsTrigger>
-            <TabsTrigger value="progress">Weekly Progress</TabsTrigger>
-            <TabsTrigger value="achievements">Achievements</TabsTrigger>
-          </TabsList>
-
-          {/* Skills Breakdown */}
-          <TabsContent value="skills">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          {/* Main Analytics */}
+          <div className="lg:col-span-2 space-y-6">
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
-                  <Brain className="h-5 w-5" />
-                  ML Skills Development
+                  <BarChart3 className="h-5 w-5" />
+                  Skill Breakdown
                 </CardTitle>
                 <CardDescription>
-                  Track your proficiency across different ML engineering skills
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                  <div className="space-y-2">
-                    <div className="flex items-center justify-between">
-                      <span className="text-sm font-medium">🐛 Bug Fixes</span>
-                      <span className="text-sm text-gray-600">{analytics.skills.bugFixes} missions</span>
-                    </div>
-                    <Progress value={(analytics.skills.bugFixes / 10) * 100} className="h-2" />
-                  </div>
-
-                  <div className="space-y-2">
-                    <div className="flex items-center justify-between">
-                      <span className="text-sm font-medium">🚀 Models Improved</span>
-                      <span className="text-sm text-gray-600">{analytics.skills.modelsImproved} missions</span>
-                    </div>
-                    <Progress value={(analytics.skills.modelsImproved / 15) * 100} className="h-2" />
-                  </div>
-
-                  <div className="space-y-2">
-                    <div className="flex items-center justify-between">
-                      <span className="text-sm font-medium">🧹 Data Cleaning</span>
-                      <span className="text-sm text-gray-600">{analytics.skills.dataCleaned} missions</span>
-                    </div>
-                    <Progress value={(analytics.skills.dataCleaned / 8) * 100} className="h-2" />
-                  </div>
-
-                  <div className="space-y-2">
-                    <div className="flex items-center justify-between">
-                      <span className="text-sm font-medium">🧠 Algorithm Selection</span>
-                      <span className="text-sm text-gray-600">{analytics.skills.algorithmsChosen} missions</span>
-                    </div>
-                    <Progress value={(analytics.skills.algorithmsChosen / 12) * 100} className="h-2" />
-                  </div>
-
-                  <div className="space-y-2">
-                    <div className="flex items-center justify-between">
-                      <span className="text-sm font-medium">⚡ Optimizations</span>
-                      <span className="text-sm text-gray-600">{analytics.skills.optimizations} missions</span>
-                    </div>
-                    <Progress value={(analytics.skills.optimizations / 10) * 100} className="h-2" />
-                  </div>
-
-                  <div className="space-y-2">
-                    <div className="flex items-center justify-between">
-                      <span className="text-sm font-medium">🔒 Security Tasks</span>
-                      <span className="text-sm text-gray-600">{analytics.skills.securityTasks} missions</span>
-                    </div>
-                    <Progress value={(analytics.skills.securityTasks / 6) * 100} className="h-2" />
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          </TabsContent>
-
-          {/* Mission Types */}
-          <TabsContent value="missions">
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Target className="h-5 w-5" />
-                  Performance by Mission Type
-                </CardTitle>
-                <CardDescription>
-                  See how you perform across different types of ML challenges
+                  Your performance across different ML mission types
                 </CardDescription>
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
-                  {analytics.missionTypes.map((missionType) => {
-                    const Icon = getMissionTypeIcon(missionType.type)
-                    const completionRate = missionType.total > 0 
-                      ? (missionType.completed / missionType.total) * 100 
-                      : 0
-
+                  {analytics.skillBreakdown.map((skill, index) => {
+                    const Icon = skill.icon
+                    const completionRate = skill.total > 0 ? (skill.completed / skill.total) * 100 : 0
+                    
                     return (
-                      <div key={missionType.type} className="flex items-center gap-4 p-4 border rounded-lg">
-                        <div className="h-10 w-10 bg-indigo-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                          <Icon className="h-5 w-5 text-indigo-600" />
+                      <div key={index} className="flex items-center gap-4">
+                        <div className="h-10 w-10 bg-gray-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                          <Icon className="h-5 w-5 text-gray-600" />
                         </div>
                         <div className="flex-1 min-w-0">
-                          <div className="flex items-center justify-between mb-2">
-                            <h3 className="font-medium">{getMissionTypeLabel(missionType.type)}</h3>
+                          <div className="flex items-center justify-between mb-1">
+                            <h4 className="font-medium text-sm">{getMissionTypeLabel(skill.type)}</h4>
                             <div className="flex items-center gap-2">
-                              <Badge variant="outline" className="text-xs">
-                                {missionType.completed}/{missionType.total}
-                              </Badge>
-                              {missionType.avgScore > 0 && (
-                                <Badge variant="secondary" className="text-xs">
-                                  {missionType.avgScore}% avg
+                              {skill.avgScore > 0 && (
+                                <Badge className={`text-xs ${getSkillColor(skill.avgScore)}`}>
+                                  {skill.avgScore}%
                                 </Badge>
                               )}
+                              <span className="text-sm text-gray-500">
+                                {skill.completed}/{skill.total}
+                              </span>
                             </div>
                           </div>
                           <Progress value={completionRate} className="h-2" />
@@ -360,104 +265,122 @@ export default function Analytics() {
                 </div>
               </CardContent>
             </Card>
-          </TabsContent>
 
-          {/* Weekly Progress */}
-          <TabsContent value="progress">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <Calendar className="h-5 w-5" />
-                    Weekly Activity
-                  </CardTitle>
-                  <CardDescription>
-                    Missions completed and points earned this week
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-4">
-                    {analytics.weeklyProgress.map((day) => (
-                      <div key={day.day} className="flex items-center gap-4">
-                        <div className="w-12 text-sm font-medium">{day.day}</div>
-                        <div className="flex-1">
-                          <div className="flex items-center justify-between mb-1">
-                            <span className="text-sm">{day.missions} missions</span>
-                            <span className="text-sm text-gray-600">{day.points} pts</span>
-                          </div>
-                          <Progress value={(day.missions / 5) * 100} className="h-2" />
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Calendar className="h-5 w-5" />
+                  Weekly Activity
+                </CardTitle>
+                <CardDescription>
+                  Your learning activity over the past week
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  <div className="grid grid-cols-7 gap-2">
+                    {analytics.weeklyActivity.map((day, index) => (
+                      <div key={index} className="text-center">
+                        <div className="text-xs text-gray-500 mb-2">{day.day}</div>
+                        <div className="h-20 bg-gray-50 rounded-lg flex flex-col items-center justify-center p-2">
+                          <div className="text-lg font-bold text-indigo-600">{day.missions}</div>
+                          <div className="text-xs text-gray-500">{day.timeSpent}m</div>
                         </div>
                       </div>
                     ))}
                   </div>
-                </CardContent>
-              </Card>
-
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <TrendingUp className="h-5 w-5" />
-                    Learning Trends
-                  </CardTitle>
-                  <CardDescription>
-                    Your learning patterns and improvement areas
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-4">
-                    <div className="flex items-center justify-between p-3 bg-green-50 rounded-lg">
-                      <span className="text-sm font-medium">Most Productive Day</span>
-                      <span className="text-sm font-semibold text-green-600">Thursday</span>
-                    </div>
-                    <div className="flex items-center justify-between p-3 bg-blue-50 rounded-lg">
-                      <span className="text-sm font-medium">Preferred Mission Type</span>
-                      <span className="text-sm font-semibold text-blue-600">Model Debug</span>
-                    </div>
-                    <div className="flex items-center justify-between p-3 bg-purple-50 rounded-lg">
-                      <span className="text-sm font-medium">Best Performance</span>
-                      <span className="text-sm font-semibold text-purple-600">Evaluation Metrics</span>
-                    </div>
-                    <div className="flex items-center justify-between p-3 bg-orange-50 rounded-lg">
-                      <span className="text-sm font-medium">Improvement Area</span>
-                      <span className="text-sm font-semibold text-orange-600">ML Security</span>
-                    </div>
+                  <div className="flex items-center justify-between text-sm text-gray-600">
+                    <span>Total: {analytics.weeklyActivity.reduce((sum, day) => sum + day.missions, 0)} missions</span>
+                    <span>{analytics.weeklyActivity.reduce((sum, day) => sum + day.timeSpent, 0)} minutes</span>
                   </div>
-                </CardContent>
-              </Card>
-            </div>
-          </TabsContent>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
 
-          {/* Achievements */}
-          <TabsContent value="achievements">
+          {/* Side Panel */}
+          <div className="space-y-6">
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <Award className="h-5 w-5" />
-                  Recent Achievements
+                  Achievements
                 </CardTitle>
                 <CardDescription>
-                  Badges and milestones you've unlocked on your learning journey
+                  Your unlocked and pending achievements
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  {analytics.achievements.map((achievement) => (
-                    <div key={achievement.id} className="flex items-center gap-4 p-4 border rounded-lg">
-                      <div className="h-12 w-12 bg-yellow-100 rounded-full flex items-center justify-center flex-shrink-0">
-                        <Trophy className="h-6 w-6 text-yellow-600" />
+                <div className="space-y-3">
+                  {analytics.achievements.map((achievement, index) => (
+                    <div 
+                      key={index} 
+                      className={`flex items-start gap-3 p-3 rounded-lg border ${
+                        achievement.unlocked 
+                          ? 'bg-green-50 border-green-200' 
+                          : 'bg-gray-50 border-gray-200'
+                      }`}
+                    >
+                      <div className={`h-8 w-8 rounded-full flex items-center justify-center flex-shrink-0 ${
+                        achievement.unlocked 
+                          ? 'bg-green-500 text-white' 
+                          : 'bg-gray-300 text-gray-500'
+                      }`}>
+                        <Award className="h-4 w-4" />
                       </div>
                       <div className="flex-1 min-w-0">
-                        <h3 className="font-semibold">{achievement.title}</h3>
-                        <p className="text-sm text-gray-600 mb-1">{achievement.description}</p>
-                        <p className="text-xs text-gray-500">Earned {achievement.earnedAt}</p>
+                        <h4 className="font-medium text-sm">{achievement.title}</h4>
+                        <p className="text-xs text-gray-600 mt-1">{achievement.description}</p>
                       </div>
                     </div>
                   ))}
                 </div>
               </CardContent>
             </Card>
-          </TabsContent>
-        </Tabs>
+
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <BookOpen className="h-5 w-5" />
+                  Learning Path
+                </CardTitle>
+                <CardDescription>
+                  Your progress through the curriculum
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-3">
+                  {[
+                    { module: 'Data Thinking for ML', progress: 100, status: 'completed' },
+                    { module: 'Python for ML', progress: 75, status: 'in-progress' },
+                    { module: 'Data Cleaning & EDA', progress: 30, status: 'in-progress' },
+                    { module: 'Supervised Learning', progress: 0, status: 'locked' },
+                    { module: 'Model Evaluation', progress: 0, status: 'locked' }
+                  ].map((item, index) => (
+                    <div key={index} className="flex items-center gap-3">
+                      <div className={`h-8 w-8 rounded-full flex items-center justify-center flex-shrink-0 ${
+                        item.status === 'completed' 
+                          ? 'bg-green-500 text-white' 
+                          : item.status === 'in-progress'
+                          ? 'bg-blue-500 text-white'
+                          : 'bg-gray-300 text-gray-500'
+                      }`}>
+                        {item.status === 'completed' ? '✓' : index + 1}
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center justify-between mb-1">
+                          <h4 className="font-medium text-sm truncate">{item.module}</h4>
+                          <span className="text-xs text-gray-500">{item.progress}%</span>
+                        </div>
+                        <Progress value={item.progress} className="h-1" />
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
       </main>
     </div>
   )

@@ -20,13 +20,16 @@ export default function Home() {
           </div>
           <div className="flex items-center gap-4">
             <Button variant="ghost" asChild>
+              <Link href="/mission-map">Curriculum</Link>
+            </Button>
+            <Button variant="ghost" asChild>
               <Link href="#features">Features</Link>
             </Button>
             <Button variant="ghost" asChild>
               <Link href="#missions">Missions</Link>
             </Button>
             <Button variant="ghost" asChild>
-              <Link href="#about">About</Link>
+              <Link href="/analytics">Analytics</Link>
             </Button>
             <Button asChild>
               <Link href="/dashboard">Start Learning</Link>
@@ -45,11 +48,11 @@ export default function Home() {
           <h1 className="text-5xl md:text-7xl font-bold mb-6 bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">
             No Videos. No Lectures.
             <br />
-            Only Missions.
+            320 Hands-On Missions.
           </h1>
           <p className="text-xl text-gray-600 mb-8 max-w-3xl mx-auto leading-relaxed">
-            Master AI/ML by fixing, building, training, debugging, and deploying models in real scenarios. 
-            Learn by doing, not by watching.
+            Master AI/ML through our comprehensive curriculum of 320 missions across 16 modules. 
+            Fix, build, train, debug, and deploy models in real scenarios. Learn by doing, not by watching.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button size="lg" className="bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700" asChild>
@@ -98,6 +101,42 @@ export default function Home() {
             <div className="flex items-center gap-2 text-lg font-semibold text-gray-700">
               <span className="bg-green-100 text-green-800 px-3 py-1 rounded-full">Insight</span>
             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Curriculum Overview */}
+      <section className="py-16 px-4 bg-white">
+        <div className="container mx-auto">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl font-bold mb-4">Complete AI/ML Curriculum</h2>
+            <p className="text-gray-600 max-w-2xl mx-auto">
+              16 comprehensive modules • 320 hands-on missions • Zero fluff
+            </p>
+          </div>
+          <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-4 mb-8">
+            {[
+              'Data Thinking', 'Python ML', 'Data Cleaning', 'Supervised Learning',
+              'Evaluation', 'Feature Eng', 'Unsupervised', 'Optimization',
+              'Deep Learning', 'Computer Vision', 'NLP', 'Security & Ethics',
+              'MLOps', 'Testing', 'Real Projects', 'Career Mode'
+            ].map((module, index) => (
+              <div key={index} className="text-center p-4 bg-gradient-to-br from-indigo-50 to-purple-50 rounded-lg border border-indigo-100">
+                <div className="w-8 h-8 bg-indigo-500 rounded-full flex items-center justify-center mx-auto mb-2">
+                  <span className="text-white text-sm font-bold">{index + 1}</span>
+                </div>
+                <div className="text-xs font-medium text-gray-700">{module}</div>
+                <div className="text-xs text-gray-500 mt-1">20 missions</div>
+              </div>
+            ))}
+          </div>
+          <div className="text-center">
+            <Button size="lg" asChild>
+              <Link href="/mission-map">
+                Explore Full Curriculum
+                <ArrowRight className="ml-2 h-5 w-5" />
+              </Link>
+            </Button>
           </div>
         </div>
       </section>

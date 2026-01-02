@@ -12,7 +12,7 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Create or get user
+    // Create or get existing user
     const user = await db.user.upsert({
       where: { email },
       update: {
@@ -21,30 +21,35 @@ export async function POST(request: NextRequest) {
       },
       create: {
         email,
-        name: name || null,
+        name: name || 'ML Learner',
         level: 1,
         totalPoints: 0,
         streak: 0
       }
     })
 
-    // Initialize user analytics if not exists
-    const today = new Date()
-    today.setHours(0, 0, 0, 0)
+    // Initialize user analytics if new user
+    if (!user.createdAt || user.createdAt.toISOString() === user.updatedAt.toISOString()) {
+      const today = new Date()
+      today.setHours(0, 0, 0, 0)
 
-    await db.userAnalytics.upsert({
-      where: {
-        userId_date: {
+      await db.userAnalytics.create({
+        data: {
           userId: user.id,
-          date: today
+          date: today,
+          missionsCompleted: 0,
+          totalAttempts: 0,
+          averageScore: 0,
+          timeSpent: 0,
+          bugFixes: 0,
+          modelsImproved: 0,
+          dataCleaned: 0,
+          algorithmsChosen: 0,
+          hintUsage: 0,
+          streakDays: 0
         }
-      },
-      update: {},
-      create: {
-        userId: user.id,
-        date: today
-      }
-    })
+      })
+    }
 
     return NextResponse.json({
       user: {
@@ -53,7 +58,8 @@ export async function POST(request: NextRequest) {
         name: user.name,
         level: user.level,
         totalPoints: user.totalPoints,
-        streak: user.streak
+        streak: user.streak,
+        avatar: user.avatar
       }
     })
   } catch (error) {
