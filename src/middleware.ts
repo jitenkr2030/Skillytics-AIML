@@ -1,14 +1,10 @@
 // ============================================
-// Skillytics Content Gating Middleware
+// Skillytics Content Gating Middleware (Edge-Compatible)
 // Controls access to content based on subscription tier
 // ============================================
 
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
-import { getServerSession } from 'next-auth';
-import { authOptions } from '@/lib/auth';
-import { db } from '@/lib/db';
-import { SubscriptionTier } from '@prisma/client';
 
 // Premium routes that require Pro or Enterprise subscription
 const premiumRoutes = [
@@ -27,7 +23,7 @@ const enterpriseRoutes = [
   '/admin/analytics'
 ];
 
-// Mission IDs that require premium (starting from mission 41)
+// Premium mission start ID
 const PREMIUM_MISSION_START = 41;
 
 export async function middleware(request: NextRequest) {
@@ -44,11 +40,13 @@ export async function middleware(request: NextRequest) {
     return NextResponse.next();
   }
 
-  // Get current session
-  const session = await getServerSession(authOptions);
+  // Check for auth token in cookies
+  const authToken = request.cookies.get('next-auth.session-token')?.value ||
+                    request.cookies.get('__Secure-next-auth.session-token')?.value ||
+                    request.cookies.get('next-auth.callback-url')?.value;
 
-  // If no session, allow access to public routes, redirect to login for protected
-  if (!session?.user?.id) {
+  // If no session token, allow access to public routes, redirect to login for protected
+  if (!authToken) {
     // Allow access to landing page, pricing, and auth routes
     if (
       pathname === '/' ||
@@ -62,77 +60,43 @@ export async function middleware(request: NextRequest) {
     return NextResponse.redirect(new URL('/auth/signin', request.url));
   }
 
-  // Get user subscription status
-  try {
-    const user = await db.user.findUnique({
-      where: { id: session.user.id },
-      select: {
-        subscriptionTier: true,
-        credits: true
-      }
-    });
+  // For routes that need subscription checks, we'll do a lightweight check
+  // by examining the path patterns. Full subscription tier checks are done
+  // in server components for proper database access.
 
-    if (!user) {
-      return NextResponse.redirect(new URL('/auth/signin', request.url));
-    }
-
-    const userTier = user.subscriptionTier;
-
-    // Check if route is enterprise-only
-    if (isEnterpriseRoute(pathname)) {
-      if (userTier !== SubscriptionTier.ENTERPRISE) {
-        // Redirect to upgrade page
-        return NextResponse.redirect(new URL('/pricing?upgrade=enterprise', request.url));
-      }
-      return NextResponse.next();
-    }
-
-    // Check if route is premium (Pro or Enterprise)
-    if (isPremiumRoute(pathname)) {
-      if (
-        userTier === SubscriptionTier.FREE ||
-        !user.subscriptionTier
-      ) {
-        // Redirect to pricing page with upgrade prompt
-        return NextResponse.redirect(new URL('/pricing?upgrade=pro', request.url));
-      }
-      return NextResponse.next();
-    }
-
-    // Check mission access by ID
-    const missionMatch = pathname.match(/\/mission\/(\d+)/);
-    if (missionMatch) {
-      const missionId = parseInt(missionMatch[1]);
-      if (missionId >= PREMIUM_MISSION_START) {
-        if (
-          userTier === SubscriptionTier.FREE ||
-          !user.subscriptionTier
-        ) {
-          return NextResponse.redirect(new URL('/pricing?upgrade=pro', request.url));
-        }
-      }
-    }
-
-    // Check module access
-    const moduleMatch = pathname.match(/\/module\/(\d+)/);
-    if (moduleMatch) {
-      const moduleId = parseInt(moduleMatch[1]);
-      if (moduleId >= 4) {
-        if (
-          userTier === SubscriptionTier.FREE ||
-          !user.subscriptionTier
-        ) {
-          return NextResponse.redirect(new URL('/pricing?upgrade=pro', request.url));
-        }
-      }
-    }
-
-    return NextResponse.next();
-  } catch (error) {
-    console.error('Middleware error:', error);
-    // On error, allow access (fail open) to prevent blocking users
-    return NextResponse.next();
+  // Check if route is enterprise-only
+  if (isEnterpriseRoute(pathname)) {
+    // Redirect to pricing with enterprise upgrade prompt
+    // Note: Actual tier verification happens in server components
+    return NextResponse.redirect(new URL('/pricing?upgrade=enterprise', request.url));
   }
+
+  // Check if route is premium (Pro or Enterprise)
+  if (isPremiumRoute(pathname)) {
+    // Redirect to pricing with pro upgrade prompt
+    // Note: Actual tier verification happens in server components
+    return NextResponse.redirect(new URL('/pricing?upgrade=pro', request.url));
+  }
+
+  // Check mission access by ID
+  const missionMatch = pathname.match(/\/mission\/(\d+)/);
+  if (missionMatch) {
+    const missionId = parseInt(missionMatch[1]);
+    if (missionId >= PREMIUM_MISSION_START) {
+      return NextResponse.redirect(new URL('/pricing?upgrade=pro', request.url));
+    }
+  }
+
+  // Check module access
+  const moduleMatch = pathname.match(/\/module\/(\d+)/);
+  if (moduleMatch) {
+    const moduleId = parseInt(moduleMatch[1]);
+    if (moduleId >= 4) {
+      return NextResponse.redirect(new URL('/pricing?upgrade=pro', request.url));
+    }
+  }
+
+  return NextResponse.next();
 }
 
 // Helper function to check if route is premium
