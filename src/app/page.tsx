@@ -113,13 +113,13 @@ export default function Home() {
             Fix, build, train, debug, and deploy models in real scenarios. Learn by doing, not by watching.
           </p>
           <div className="flex flex-col sm:flex-row gap-3 md:gap-4 justify-center px-4">
-            <Button size="sm" md:size="lg" className="bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 w-full sm:w-auto" asChild>
+            <Button size="lg" className="bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 w-full sm:w-auto" asChild>
               <Link href="/dashboard">
                 Start Your First Mission
                 <ArrowRight className="ml-2 h-4 w-4 md:h-5 md:w-5" />
               </Link>
             </Button>
-            <Button size="sm" md:size="lg" variant="outline" className="w-full sm:w-auto" asChild>
+            <Button size="lg" variant="outline" className="w-full sm:w-auto" asChild>
               <Link href="#missions">Explore Missions</Link>
             </Button>
           </div>
@@ -188,7 +188,7 @@ export default function Home() {
             ))}
           </div>
           <div className="text-center">
-            <Button size="sm" md:size="lg" asChild>
+            <Button size="lg" asChild>
               <Link href="/mission-map">
                 Explore Full Curriculum
                 <ArrowRight className="ml-2 h-4 w-4 md:h-5 md:w-5" />
@@ -296,7 +296,7 @@ export default function Home() {
             Join thousands of learners who are skipping the theory and diving straight into 
             real-world ML problem solving.
           </p>
-          <Button size="sm" md:size="lg" variant="secondary" asChild>
+          <Button size="lg" variant="secondary" asChild>
             <Link href="/dashboard">
               Start Your First Mission Now
               <Rocket className="ml-2 h-4 w-4 md:h-5 md:w-5" />
